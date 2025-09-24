@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALL IN!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a252f;
+            color: #ecf0f1;
+            padding: 20px;
+            font-size: 1.1em;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+        h1 {
+            color: #ecf0f1;
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            letter-spacing: 0.3em;
+        }
+        .table-section h2, #total-value h2 {
+            color: #ecf0f1;
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        #total-value {
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            background-color: #2c3e50;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+        #total-value h2 {
+            color: #3498db;
+            margin: 0;
+            font-size: 1.5em;
+        }
+        #total-value p {
+            font-size: 2em;
+            font-weight: bold;
+            color: #FFFF99;
+            margin: 5px 0 0;
+        }
+        .form-container {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        .form-section {
+            flex: 1;
+            max-width: 400px;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+            border: 1px solid #34495e;
+            background-color: #233240;
+        }
+        .form-section.stock h2 {
+            color: #e74c3c;
+        }
+        .form-section.option h2 {
+            color: #2ecc71;
+        }
+        .input-group {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .input-group label {
+            width: 70px;
+            flex-shrink: 0;
+            font-weight: bold;
+            font-size: 1em;
+            margin-top: 10px;
+            color: #bdc3c7;
+        }
+        .input-group input, .input-group select {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 1em;
+            background-color: #2c3e50;
+            border: 2px solid #3d566e;
+            color: #ecf0f1;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        .option-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .option-group input, .option-group select {
+            flex: 1 1 100px;
+            min-width: 80px;
+        }
+        .option-type-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .option-type-button {
+            flex: 1;
+            padding: 8px;
+            font-size: 1em;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .option-type-button:hover {
+            background-color: #2c3e50;
+        }
+        .option-type-button.selected {
+            background-color: #3498db;
+            color: #1a252f;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            background-color: #3498db;
+            color: #1a252f;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2c3e50;
+        }
+        .delete-button, .edit-button, .save-button, .cancel-button {
+            padding: 0;
+            font-size: 1em;
+            border: none;
+            background: none;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            color: #1a252f;
+        }
+        .delete-button:hover, .edit-button:hover, .save-button:hover, .cancel-button:hover {
+            background-color: #2c3e50;
+            color: #1a252f;
+        }
+        .delete-button {
+            background-color: #e74c3c;
+            color: #fff;
+            border-radius: 5px;
+        }
+        .delete-button:hover {
+            background-color: #2c3e50;
+        }
+        .save-button {
+            background-color: #2ecc71;
+            color: #fff;
+            border-radius: 5px;
+        }
+        .save-button:hover {
+            background-color: #2c3e50;
+        }
+        .cancel-button {
+            background-color: #95a5a6;
+            color: #fff;
+            border-radius: 5px;
+        }
+        .cancel-button:hover {
+            background-color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #2f4050;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #34495e;
+            font-size: 1.1em;
+        }
+        th {
+            background-color: #2c3e50;
+            font-weight: bold;
+            color: #ecf0f1;
+            text-align: center;
+            cursor: pointer;
+        }
+        td {
+            text-align: center;
+        }
+        td:nth-child(2) {
+            text-align: left;
+        }
+        tr.completed {
+            background-color: #34495e;
+            opacity: 0.6;
+        }
+        tr:hover:not(.completed) {
+            background-color: #3d566e;
+        }
+        .stock-type {
+            background-color: #c0392b;
+        }
+        .option-type {
+            background-color: #27ae60;
+        }
+        .sort-arrow {
+            display: inline-block;
+            margin-left: 5px;
+        }
+        .sort-arrow::after {
+            content: ' ▼';
+        }
+        .sort-arrow.asc::after {
+            content: ' ▲';
+        }
+        .edit-input {
+            font-size: 1em;
+            padding: 5px;
+            background-color: #34495e;
+            border: 1px solid #2c3e50;
+            color: #ecf0f1;
+            border-radius: 3px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .option-edit-group {
+            display: flex;
+            gap: 5px;
+        }
+        .filter-section {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .filter-section label {
+            font-weight: bold;
+            font-size: 1em;
+            color: #bdc3c7;
+        }
+        #optionExpiration, #filterType {
+            padding: 10px;
+            font-size: 1em;
+            background-color: #1b263b;
+            border: 2px solid #2c3e50;
+            color: #ecf0f1;
+            border-radius: 5px;
+            cursor: pointer;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23ecf0f1" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px;
+            width: 200px;
+            transition: border-color 0.3s;
+            font-weight: 500;
+        }
+        #optionExpiration:hover,
+        #optionExpiration:focus,
+        #filterType:hover,
+        #filterType:focus {
+            border-color: #34495e;
+            outline: none;
+        }
+        .filter-section button {
+            width: 120px;
+            padding: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            background-color: #3498db;
+            color: #1a252f;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .filter-section button:hover {
+            background-color: #2c3e50;
+        }
+        @media (max-width: 600px) {
+            .form-container {
+                flex-direction: column;
+            }
+            .form-section {
+                max-width: 100%;
+            }
+            table {
+                font-size: 0.9em;
+            }
+            th, td {
+                padding: 8px;
+            }
+            .filter-section {
+                flex-direction: column;
+                gap: 10px;
+            }
+            #optionExpiration,
+            #filterType,
+            .filter-section button {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ALL IN!</h1>
+        <div id="total-value">
+            <h2>總金額(USD)</h2>
+            <p id="total-usd-value">$0.00</p>
+        </div>
+        <div class="form-container">
+            <div class="form-section stock">
+                <h2>個股</h2>
+                <div class="input-group">
+                    <label for="stockSymbol">標的：</label>
+                    <input type="text" id="stockSymbol" pattern="[A-Za-z0-9.]+" placeholder="輸入股票代碼" aria-label="個股代碼輸入框">
+                </div>
+                <div class="input-group">
+                    <label for="stockPrice">價位：</label>
+                    <input type="number" id="stockPrice" min="0" max="1000000" step="0.01" placeholder="輸入購買價位" aria-label="個股購買價位輸入框">
+                </div>
+                <div class="input-group">
+                    <label for="stockQuantity">股數：</label>
+                    <input type="number" id="stockQuantity" min="1" max="1000000" step="1" placeholder="輸入股數" aria-label="個股股數輸入框">
+                </div>
+                <button id="stockAddButton">新增</button>
+            </div>
+
+            <div class="form-section option">
+                <h2>選擇權</h2>
+                <div class="input-group">
+                    <label>標的：</label>
+                    <div class="option-group">
+                        <input type="text" id="optionUnderlying" value="." pattern="[A-Za-z0-9.]+" placeholder="輸入股票代碼" aria-label="選擇權標的輸入框">
+                        <select id="optionExpiration" aria-label="選擇權到期日輸入框">
+                            </select>
+                        <div class="option-type-buttons">
+                            <button type="button" class="option-type-button" data-type="C">Call</button>
+                            <button type="button" class="option-type-button" data-type="P">Put</button>
+                        </div>
+                        <input type="number" id="optionStrike" min="0" max="1000000" step="0.01" placeholder="輸入行使價" aria-label="選擇權行使價輸入框">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="optionPrice">價位：</label>
+                    <input type="text" id="optionPrice" value="0." min="0" max="1000000" step="0.01" placeholder="輸入購買價位" aria-label="選擇權購買價位輸入框">
+                </div>
+                <div class="input-group">
+                    <label for="optionQuantity">口數：</label>
+                    <input type="number" id="optionQuantity" min="1" max="1000000" step="1" placeholder="輸入口數" aria-label="選擇權口數輸入框">
+                </div>
+                <button id="optionAddButton">新增</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <label for="filterType">篩選類別：</label>
+            <select id="filterType">
+                <option value="all">全部</option>
+                <option value="stock">個股</option>
+                <option value="option">選擇權</option>
+            </select>
+            <button id="exportButton">匯出記錄</button>
+        </div>
+
+        <div class="table-section">
+            <h2>我的紀錄</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50px;"></th>
+                        <th class="sortable" data-column="symbol">標的<span class="sort-arrow"></span></th>
+                        <th>類別</th>
+                        <th class="sortable" data-column="price">價位<span class="sort-arrow"></span></th>
+                        <th class="sortable" data-column="quantity">股數<span class="sort-arrow"></span></th>
+                        <th class="sortable" data-column="date">日期<span class="sort-arrow"></span></th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="record-table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 生成選擇權到期日選項（根據提供的特定日期，按時間順序排序）
+        function generateOptionExpirations() {
+            const select = document.getElementById('optionExpiration');
+            const customExpirations = [
+                "2025-09-25", "2025-10-03", "2025-10-10", "2025-10-17", "2025-10-24", "2025-10-31",
+                "2025-11-21", "2025-12-19", "2026-01-16", "2026-02-20", "2026-03-20", "2026-04-17",
+                "2026-05-15", "2026-06-18", "2026-08-21", "2026-09-18", "2026-12-18", "2027-01-15",
+                "2027-06-17", "2027-12-17", "2028-01-21"
+            ].sort((a, b) => new Date(a) - new Date(b)); // 按時間順序排序
+
+            // 填充選項
+            select.innerHTML = '';
+            customExpirations.forEach(exp => {
+                const option = document.createElement('option');
+                option.value = exp;
+                option.textContent = exp;
+                select.appendChild(option);
+            });
+
+            // 預設選中下一個日期（2025-09-25，因當前為 2025-09-24）
+            const today = new Date('2025-09-24');
+            const nextExp = customExpirations.find(exp => new Date(exp) > today) || customExpirations[0];
+            select.value = nextExp;
+        }
+
+        // 共用函數：清理輸入以防止 XSS
+        function sanitizeInput(input) {
+            const div = document.createElement('div');
+            div.textContent = input;
+            return div.innerHTML;
+        }
+
+        // 驗證股票/選擇權標的格式
+        function isValidSymbol(symbol) {
+            return /^[A-Za-z0-9.]+$/.test(symbol);
+        }
+
+        // 驗證日期格式 (YYYY-MM-DD)
+        function isValidDate(date) {
+            return /^\d{4}-\d{2}-\d{2}$/.test(date);
+        }
+
+        // 格式化選擇權符號 (.AAPL 25 10 17 C 12)
+        function formatOptionSymbol(underlying, expiration, type, strike) {
+            const year = expiration.slice(2, 4);
+            const month = expiration.slice(5, 7);
+            const day = expiration.slice(8, 10);
+            return `.${sanitizeInput(underlying)} ${year} ${month} ${day} ${type} ${sanitizeInput(strike)}`;
+        }
+
+        // 解析選擇權符號
+        function parseOptionSymbol(formattedSymbol) {
+            const parts = formattedSymbol.split(/\s+/);
+            if (parts.length < 5) return null;
+            const underlying = parts[0].slice(1); // 移除開頭的點
+            const year = `20${parts[1]}`; // 補全年份
+            const month = parts[2];
+            const day = parts[3];
+            const type = parts[4].toUpperCase();
+            const strike = parts.slice(5).join('');
+            const expiration = `${year}-${month}-${day}`;
+            return { underlying, expiration, type, strike };
+        }
+
+        // 儲存記錄到 localStorage
+        function saveRecords(records) {
+            const dataSize = new Blob([JSON.stringify(records)]).size;
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (dataSize > maxSize) {
+                alert('儲存空間不足，請匯出並清除舊記錄！');
+                return false;
+            }
+            localStorage.setItem('stockRecords', JSON.stringify(records));
+            return true;
+        }
+
+        // 從 localStorage 載入記錄
+        function loadRecords() {
+            return JSON.parse(localStorage.getItem('stockRecords')) || [];
+        }
+
+        // 更新總金額（僅計算未勾選的記錄）
+        function updateTotalValue() {
+            const rows = Array.from(recordTableBody.querySelectorAll('tr'));
+            let totalValue = 0;
+            rows.forEach(row => {
+                if (row.style.display === 'none' || row.classList.contains('completed')) return; // 忽略隱藏或已勾選的行
+                const type = row.cells[2].textContent;
+                const price = parseFloat(row.cells[3].textContent.replace('$', ''));
+                const quantity = parseInt(row.cells[4].textContent);
+
+                if (!isNaN(price) && !isNaN(quantity)) {
+                    totalValue += type === '個股' ? price * quantity : price * quantity * 100;
+                }
+            });
+            totalValueDisplay.textContent = `$${totalValue.toFixed(2)}`;
+        }
+
+        // 排序表格
+        let sortColumn = 'symbol';
+        let sortDirection = 'asc';
+        function sortTable(column) {
+            if (sortColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortDirection = 'asc';
+            }
+
+            const tbody = recordTableBody;
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const columnMap = { symbol: 1, price: 3, quantity: 4, date: 5 };
+
+            rows.sort((a, b) => {
+                let aValue = a.cells[columnMap[column]].textContent.trim();
+                let bValue = b.cells[columnMap[column]].textContent.trim();
+
+                if (column === 'price') {
+                    aValue = parseFloat(aValue.replace('$', '')) || 0;
+                    bValue = parseFloat(bValue.replace('$', '')) || 0;
+                } else if (column === 'quantity') {
+                    aValue = parseInt(aValue) || 0;
+                    bValue = parseInt(bValue) || 0;
+                } else if (column === 'date') {
+                    aValue = new Date(aValue);
+                    bValue = new Date(bValue);
+                } else if (column === 'symbol') {
+                    const aIsOption = a.cells[2].textContent === '選擇權';
+                    const bIsOption = b.cells[2].textContent === '選擇權';
+                    if (aIsOption && bIsOption) {
+                        const aParts = parseOptionSymbol(aValue);
+                        const bParts = parseOptionSymbol(bValue);
+                        aValue = `${aParts.underlying}${aParts.expiration}${aParts.type}${aParts.strike}`;
+                        bValue = `${bParts.underlying}${bParts.expiration}${bParts.type}${bParts.strike}`;
+                    }
+                }
+
+                if (sortDirection === 'asc') {
+                    return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+                } else {
+                    return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+                }
+            });
+
+            document.querySelectorAll('.sort-arrow').forEach(arrow => arrow.classList.remove('asc'));
+            const activeHeader = document.querySelector(`th[data-column="${column}"] .sort-arrow`);
+            if (sortDirection === 'asc') activeHeader.classList.add('asc');
+
+            rows.forEach(row => tbody.appendChild(row));
+            updateLocalStorage();
+        }
+
+        // 啟用編輯模式
+        function enableEditMode(row) {
+            const cells = row.cells;
+            const originalSymbol = cells[1].textContent.trim();
+            const originalPrice = cells[3].textContent.replace('$', '');
+            const originalQuantity = cells[4].textContent;
+            const type = cells[2].textContent === '個股' ? 'stock' : 'option';
+            const originalHtml = row.innerHTML;
+
+            cells[3].innerHTML = `<input type="text" value="${originalPrice}" class="edit-input">`;
+            cells[4].innerHTML = `<input type="number" value="${originalQuantity}" class="edit-input" min="1" max="1000000" step="1">`;
+
+            if (type === 'stock') {
+                cells[1].innerHTML = `<input type="text" value="${originalSymbol}" class="edit-input" pattern="[A-Za-z0-9.]+">`;
+            } else {
+                const { underlying, expiration, strike, type: optionType } = parseOptionSymbol(originalSymbol);
+                cells[1].innerHTML = `
+                    <div class="option-edit-group">
+                        <input type="text" value=".${underlying}" class="edit-input" pattern="[A-Za-z0-9.]+">
+                        <select class="edit-input" style="flex:1;">
+                            ${generateOptionExpirationsForEdit(expiration)}
+                        </select>
+                        <input type="number" value="${strike}" class="edit-input" min="0" max="1000000" step="0.01">
+                    </div>
+                `;
+                cells[2].innerHTML = `
+                    <div class="option-edit-group">
+                        <div class="option-type-buttons">
+                            <button type="button" class="option-type-button ${optionType === 'C' ? 'selected' : ''}" data-type="C">C</button>
+                            <button type="button" class="option-type-button ${optionType === 'P' ? 'selected' : ''}" data-type="P">P</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            cells[6].innerHTML = `
+                <button class="save-button">保</button>
+                <button class="cancel-button">取</button>
+            `;
+
+            cells[6].querySelector('.save-button').addEventListener('click', () => {
+                const newPrice = cells[3].querySelector('.edit-input').value;
+                const newQuantity = cells[4].querySelector('.edit-input').value;
+
+                let newSymbol;
+                if (type === 'stock') {
+                    newSymbol = sanitizeInput(cells[1].querySelector('.edit-input').value.toUpperCase().trim());
+                    if (!newSymbol || !isValidSymbol(newSymbol)) {
+                        alert('股票標的無效，只能包含字母、數字或點！');
+                        return;
+                    }
+                } else {
+                    const newUnderlyingInput = cells[1].querySelectorAll('.edit-input')[0].value.trim();
+                    const newUnderlying = newUnderlyingInput.startsWith('.') ? newUnderlyingInput.slice(1).toUpperCase() : newUnderlyingInput.toUpperCase();
+                    const newExpiration = cells[1].querySelector('select').value;
+                    const newStrike = cells[1].querySelectorAll('.edit-input')[2].value;
+                    const newType = cells[2].querySelector('.option-type-button.selected').dataset.type;
+
+                    if (!newUnderlying || !newExpiration || !newStrike || !newType || !newPrice || !newQuantity) {
+                        alert('請填寫所有選擇權欄位！');
+                        return;
+                    }
+                    if (!isValidSymbol(newUnderlying)) {
+                        alert('選擇權標的無效，只能包含字母、數字或點！');
+                        return;
+                    }
+                    if (!isValidDate(newExpiration)) {
+                        alert('到期日格式必須為 YYYY-MM-DD！');
+                        return;
+                    }
+                    newSymbol = formatOptionSymbol(newUnderlying, newExpiration, newType, newStrike);
+                }
+
+                if (!newPrice || parseFloat(newPrice) <= 0 || !newQuantity || parseInt(newQuantity) <= 0) {
+                    alert('價位和股數/口數必須為正數！');
+                    return;
+                }
+
+                cells[1].innerHTML = newSymbol;
+                cells[3].textContent = `$${parseFloat(newPrice).toFixed(2)}`;
+                cells[4].textContent = newQuantity;
+                cells[2].innerHTML = type === 'stock' ? '個股' : `<span class="option-type">選擇權</span>`;
+
+                cells[6].innerHTML = `<button class="edit-button">編</button><button class="delete-button">刪</button>`;
+                updateLocalStorage();
+                sortTable(sortColumn);
+            });
+
+            cells[6].querySelector('.cancel-button').addEventListener('click', () => {
+                row.innerHTML = originalHtml;
+                bindRowEvents(row);
+            });
+        }
+
+        // 綁定行事件
+        function bindRowEvents(row) {
+            const checkbox = row.querySelector('.record-checkbox');
+            if (checkbox) {
+                checkbox.addEventListener('change', function() {
+                    row.classList.toggle('completed', this.checked);
+                    updateLocalStorage();
+                });
+            }
+        }
+
+        // 新增記錄
+        function addRecord(record) {
+            const newRow = document.createElement('tr');
+            const typeClass = record.type === 'stock' ? 'stock-type' : 'option-type';
+            const displaySymbol = record.type === 'stock' ? sanitizeInput(record.symbol) : formatOptionSymbol(
+                record.symbol,
+                record.expiration,
+                record.optionType || record.type,
+                record.strike
+            );
+
+            newRow.innerHTML = `
+                <td><input type="checkbox" class="record-checkbox" ${record.completed ? 'checked' : ''}></td>
+                <td>${displaySymbol}</td>
+                <td class="${typeClass}">${record.type === 'stock' ? '個股' : '選擇權'}</td>
+                <td>$${parseFloat(record.price).toFixed(2)}</td>
+                <td>${record.quantity}</td>
+                <td>${record.date}</td>
+                <td>
+                    <button class="edit-button">編</button>
+                    <button class="delete-button">刪</button>
+                </td>
+            `;
+            if (record.completed) newRow.classList.add('completed');
+            recordTableBody.appendChild(newRow);
+            bindRowEvents(newRow);
+        }
+
+        // 更新 localStorage
+        function updateLocalStorage() {
+            const rows = Array.from(recordTableBody.querySelectorAll('tr'));
+            const records = rows.map(row => {
+                const typeText = row.cells[2].textContent;
+                const record = {
+                    symbol: row.cells[1].textContent.trim(),
+                    type: typeText === '個股' ? 'stock' : 'option',
+                    price: row.cells[3].textContent.replace('$', ''),
+                    quantity: row.cells[4].textContent,
+                    date: row.cells[5].textContent,
+                    completed: row.classList.contains('completed')
+                };
+                if (record.type === 'option') {
+                    const { underlying, expiration, type: optionType, strike } = parseOptionSymbol(record.symbol);
+                    record.symbol = underlying;
+                    record.expiration = expiration;
+                    record.strike = strike;
+                    record.optionType = optionType;
+                }
+                return record;
+            });
+            saveRecords(records);
+            updateTotalValue();
+        }
+
+        // DOM 元素
+        const stockSymbolInput = document.getElementById('stockSymbol');
+        const stockPriceInput = document.getElementById('stockPrice');
+        const stockQuantityInput = document.getElementById('stockQuantity');
+        const stockAddButton = document.getElementById('stockAddButton');
+        const optionUnderlyingInput = document.getElementById('optionUnderlying');
+        const optionExpirationInput = document.getElementById('optionExpiration');
+        const optionTypeButtons = document.querySelectorAll('.option-type-button');
+        const optionStrikeInput = document.getElementById('optionStrike');
+        const optionPriceInput = document.getElementById('optionPrice');
+        const optionQuantityInput = document.getElementById('optionQuantity');
+        const optionAddButton = document.getElementById('optionAddButton');
+        const recordTableBody = document.getElementById('record-table-body');
+        const totalValueDisplay = document.getElementById('total-usd-value');
+        const filterTypeSelect = document.getElementById('filterType');
+        const exportButton = document.getElementById('exportButton');
+
+        let selectedOptionType = 'C';
+
+        // 選擇權類型按鈕事件
+        optionTypeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                optionTypeButtons.forEach(btn => btn.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedOptionType = this.dataset.type;
+            });
+            if (button.dataset.type === 'C') button.classList.add('selected');
+        });
+
+        // 表格事件委派
+        recordTableBody.addEventListener('click', (event) => {
+            const target = event.target;
+            const row = target.closest('tr');
+            if (!row) return;
+            if (target.classList.contains('edit-button')) {
+                enableEditMode(row);
+            } else if (target.classList.contains('delete-button')) {
+                row.remove();
+                updateLocalStorage();
+            }
+        });
+
+        // 排序事件
+        document.querySelectorAll('.sortable').forEach(header => {
+            header.addEventListener('click', () => {
+                sortTable(header.dataset.column);
+            });
+        });
+
+        // 新增股票記錄
+        stockAddButton.addEventListener('click', function() {
+            const symbol = sanitizeInput(stockSymbolInput.value.toUpperCase().trim());
+            const price = stockPriceInput.value;
+            const quantity = stockQuantityInput.value;
+
+            if (!symbol || !isValidSymbol(symbol)) {
+                alert('股票標的無效，只能包含字母、數字或點！');
+                return;
+            }
+            if (!price || price <= 0) {
+                alert('價位必須為正數！');
+                return;
+            }
+            if (!quantity || quantity <= 0) {
+                alert('股數必須為正數！');
+                return;
+            }
+
+            const newRecord = {
+                symbol,
+                type: 'stock',
+                price: parseFloat(price).toFixed(2),
+                quantity: parseInt(quantity),
+                date: new Date().toLocaleDateString('zh-TW'),
+                completed: false
+            };
+            addRecord(newRecord);
+
+            stockSymbolInput.value = '';
+            stockPriceInput.value = '';
+            stockQuantityInput.value = '';
+            updateLocalStorage();
+            sortTable(sortColumn);
+        });
+
+        // 新增選擇權記錄
+        optionAddButton.addEventListener('click', function() {
+            const underlyingInput = sanitizeInput(optionUnderlyingInput.value.trim());
+            const underlying = underlyingInput.startsWith('.') ? underlyingInput.slice(1).toUpperCase() : underlyingInput.toUpperCase();
+            const expiration = optionExpirationInput.value;
+            const optionType = selectedOptionType;
+            const strike = optionStrikeInput.value;
+            const price = optionPriceInput.value;
+            const quantity = optionQuantityInput.value;
+
+            if (!underlying || !isValidSymbol(underlying)) {
+                alert('選擇權標的無效，只能包含字母、數字或點！');
+                return;
+            }
+            if (!expiration || !isValidDate(expiration)) {
+                alert('請選擇有效的到期日！');
+                return;
+            }
+            if (!strike || strike <= 0) {
+                alert('行使價必須為正數！');
+                return;
+            }
+            if (!price || parseFloat(price) <= 0) {
+                alert('價位必須為正數！');
+                return;
+            }
+            if (!quantity || quantity <= 0) {
+                alert('口數必須為正數！');
+                return;
+            }
+
+            const newRecord = {
+                symbol: underlying,
+                type: 'option',
+                optionType,
+                expiration,
+                strike,
+                price: parseFloat(price).toFixed(2),
+                quantity: parseInt(quantity),
+                date: new Date().toLocaleDateString('zh-TW'),
+                completed: false
+            };
+            addRecord(newRecord);
+
+            optionUnderlyingInput.value = '.';
+            optionExpirationInput.value = '';
+            optionStrikeInput.value = '';
+            optionPriceInput.value = '0.';
+            optionQuantityInput.value = '';
+            updateLocalStorage();
+            sortTable(sortColumn);
+        });
+
+        // 篩選記錄
+        filterTypeSelect.addEventListener('change', function() {
+            const filter = this.value;
+            const rows = Array.from(recordTableBody.querySelectorAll('tr'));
+            rows.forEach(row => {
+                const type = row.cells[2].textContent;
+                row.style.display = filter === 'all' || (filter === 'stock' && type === '個股') || (filter === 'option' && type === '選擇權') ? '' : 'none';
+            });
+            updateTotalValue();
+        });
+
+        // 匯出記錄
+        exportButton.addEventListener('click', function() {
+            const records = loadRecords();
+            const json = JSON.stringify(records, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'stock_records.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // 初始化
+        function generateOptionExpirationsForEdit(currentExp) {
+            const customExpirations = [
+                "2025-09-25", "2025-10-03", "2025-10-10", "2025-10-17", "2025-10-24", "2025-10-31",
+                "2025-11-21", "2025-12-19", "2026-01-16", "2026-02-20", "2026-03-20", "2026-04-17",
+                "2026-05-15", "2026-06-18", "2026-08-21", "2026-09-18", "2026-12-18", "2027-01-15",
+                "2027-06-17", "2027-12-17", "2028-01-21"
+            ].sort((a, b) => new Date(a) - new Date(b));
+
+            let optionsHtml = '';
+            customExpirations.forEach(exp => {
+                const selected = exp === currentExp ? 'selected' : '';
+                optionsHtml += `<option value="${exp}" ${selected}>${exp}</option>`;
+            });
+            return optionsHtml;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            generateOptionExpirations();
+            loadRecords().forEach(record => addRecord(record));
+            sortTable('symbol');
+        });
+    </script>
+</body>
+</html>
